@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- partial -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"
+      integrity="sha512-UNM1njAgOFUa74Z0bADwAq8gbTcqZC8Ej4xPSzpnh0l6KMevwvkBvbldF9uR++qKeJ+MOZHRjV1HZjoRvjDfNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link rel="stylesheet" href="./css/output.css" />
+    <script src="./js/nmrtc.js"></script>
+    <style>
+      .video {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .video-container {
+        /* width is set as 100% here. any width can be specified as per requirement */
+        width: 100%;
+        padding-top: 56.25%;
+        height: 0px;
+        position: relative;
+      }
+      .deactive:after {
+        content: "";
+        width: 2.5rem;
+        height: 3px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: #fff;
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+      .show-menu {
+        width: 14rem;
+      }
+      @media (max-width: 768px) {
+        .show-menu {
+          width: 100%;
+        }
+      }
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -60px;
+      }
+
+      .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body class="dark overflow-hidden bg-tribg">
+    <header
+      class="h-12 px-3 md:h-14 z-30 dark:bg-tribg bg-gray-50 shadow-sm absolute top-0 w-screen left-0 flex items-center"
+    >
+      <button id="menu-toggle" class="dark:text-gray-200 text-gray-800">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-menu"
+        >
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <button id="dark-toggle" class="mx-5 hidden dark:text-gray-200 text-gray-800">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.9618 10.79C18.8045 12.4922 18.1657 14.1144 17.1201 15.4668C16.0744 16.8192 14.6653 17.8458 13.0575 18.4265C11.4497 19.0073 9.7098 19.1181 8.04132 18.7461C6.37283 18.3741 4.84481 17.5345 3.63604 16.3258C2.42727 15.117 1.58775 13.589 1.21572 11.9205C0.843691 10.252 0.954531 8.51208 1.53528 6.9043C2.11602 5.29651 3.14265 3.88737 4.49503 2.84175C5.84741 1.79614 7.46961 1.15731 9.17182 1C8.17523 2.34827 7.69566 4.00945 7.82035 5.68141C7.94503 7.35338 8.66568 8.92506 9.85122 10.1106C11.0368 11.2961 12.6084 12.0168 14.2804 12.1415C15.9524 12.2662 17.6135 11.7866 18.9618 10.79V10.79Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </header>
+    <div class="flex">
+      <aside
+        id="sidebar"
+        class="h-screen overflow-x-hidden antialiased shadow ease-in w-0 md:block md:w-12 z-20 bg-gray-50 dark:bg-tribg"
+      >
+        <nav class="flex flex-col text-gray-800 dark:text-gray-300 mt-20">
+          <a
+            id="stream-navbtn"
+            href="./stream.html"
+            class="flex cursor-pointer items-center py-2 nav-link"
+          >
+            <img src="./img/stream.svg" class="px-3 h-7" alt="" />
+            <span class="">Stream</span>
+          </a>
+          <a
+            id="webcam-navbtn"
+            href="./"
+            class="flex cursor-pointer items-center py-2 bg-trigreen nav-link"
+          >
+            <img src="./img/camera.svg" class="px-3 h-7" alt="" />
+            <span class="">Webcam</span>
+          </a>
+          <a id="setting-navbtn" class="flex cursor-pointer items-center py-2 nav-link">
+            <img src="./img/settings.svg" class="px-3 h-7" alt="" />
+            <span class="">Settings</span>
+          </a>
+        </nav>
+      </aside>
+      <section
+        class="main-screen h-screen w-full bg-black flex justify-center items-center"
+        id="webcam"
+      >
+        <a class="z-10 absolute status top-16 bg-red-500 text-red-50 flex items-center px-2 hidden"
+          >LIVE <span style="padding: 5px 8px; border-radius: 100%" id="live-count">0</span></a
+        >
+        <div class="video-container">
+          <video id="webcamvideo" autoplay muted class="video"></video>
+        </div>
+      </section>
+      <section
+        id="chat"
+        class="h-screen z-50 w-full hidden top-0 right-0 py-8 md:w-72 xl:w-1/5 bg-tribg absolute md:relative"
+      >
+        <button id="chat-close" class="h-8 w-8 absolute top-0 right-0 text-green-100 bg-gray-600">
+          X
+        </button>
+        <div class="flex flex-col h-full p-5">
+          <div class="flex text-gray-200 justify-around">
+            <a href="#">Comments</a>
+          </div>
+          <div class="h-full"></div>
+          <div class="relative mb-8 md:mb-0">
+            <input
+              type="text"
+              class="w-full rounded-full bg-black p-2 text-gray-200"
+              placeholder="Drop your comment..."
+            />
+            <button class="absolute rounded-full bg-trigreen top-0 right-0 flex p-2 justify-center">
+              <svg
+                width="29"
+                height="22"
+                viewBox="0 0 29 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0.576551 0.394923L28.3743 2.41451L7.74097 21.1511L4.9548 13.0792L21.4555 4.80265L3.36271 8.46676L0.576551 0.394923Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <footer
+      class="p-2 w-screen z-10 bg-gray-50 dark:bg-tribg fixed bottom-0 left-0 flex items-center justify-center"
+    >
+      <button
+        id="start-btn"
+        class="relative tooltip mx-2 flex items-center justify-center bg-red-600 hover:bg-red-400 h-10 w-10 rounded-md"
+      >
+        <svg
+          width="22"
+          height="23"
+          viewBox="0 0 22 23"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g clip-path="url(#clip0_7_520)">
+            <path
+              d="M12.4442 4.74344H2.407C1.08315 4.74344 0 5.87582 0 7.25985V15.7402C0 17.1242 1.08315 18.2566 2.407 18.2566H12.4442C13.7681 18.2566 14.8512 17.1242 14.8512 15.7402V7.25985C14.8512 5.85066 13.7681 4.74344 12.4442 4.74344Z"
+              fill="white"
+            />
+            <path
+              d="M9.75098 11.9674C9.75098 13.0719 8.85555 13.9674 7.75098 13.9674C6.64641 13.9674 5.75098 13.0719 5.75098 11.9674C5.75098 10.8628 6.64641 9.96738 7.75098 9.96738C8.85555 9.96738 9.75098 10.8628 9.75098 11.9674Z"
+              fill="#212121"
+            />
+            <path
+              d="M20.2188 6.12748C20.0744 6.15264 19.93 6.22813 19.8096 6.30363L16.0547 8.56839V14.4065L19.8337 16.6712C20.5317 17.099 21.3982 16.8474 21.8074 16.1176C21.9278 15.8911 22 15.6395 22 15.3627V7.58699C22 6.65592 21.1575 5.901 20.2188 6.12748Z"
+              fill="white"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_7_520">
+              <rect width="22" height="23" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+        <span class="tooltiptext">Go Live</span>
+      </button>
+      <button
+        id="mic-btn"
+        class="relative tooltip mx-2 flex items-center justify-center border border-trigreen bg-black hover:bg-trigreen h-10 w-10 rounded-md"
+      >
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 22 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.1743 11.777C18.1743 11.4148 17.8806 11.121 17.5182 11.121C17.1558 11.121 16.8621 11.4148 16.8621 11.777C16.8621 14.9862 14.2514 17.5969 11.0421 17.5969C7.83308 17.5969 5.22238 14.9862 5.22238 11.777C5.22238 11.4148 4.92865 11.121 4.56627 11.121C4.20389 11.121 3.91016 11.4148 3.91016 11.777C3.91016 15.4886 6.75986 18.5462 10.386 18.8786V20.6448H7.95124C7.58886 20.6448 7.29513 20.9386 7.29513 21.3009C7.29513 21.6633 7.58886 21.957 7.95124 21.957H14.1332C14.4954 21.957 14.7892 21.6633 14.7892 21.3009C14.7892 20.9386 14.4954 20.6448 14.1332 20.6448H11.6983V18.8786C15.3246 18.5464 18.1743 15.4886 18.1743 11.777Z"
+            fill="white"
+          />
+          <path
+            d="M11.0422 17.0254C13.3586 17.0254 15.2432 15.1408 15.2432 12.8243V5.20524C15.2432 2.88895 13.3586 1.00436 11.0422 1.00436C8.72589 1.00436 6.84131 2.88895 6.84131 5.20524V12.8243C6.84131 15.1408 8.72589 17.0254 11.0422 17.0254Z"
+            fill="white"
+          />
+          <path
+            d="M11.0422 17.0254C13.3586 17.0254 15.2432 15.1408 15.2432 12.8243V5.20524C15.2432 2.88895 13.3586 1.00436 11.0422 1.00436C8.72589 1.00436 6.84131 2.88895 6.84131 5.20524V12.8243C6.84131 15.1408 8.72589 17.0254 11.0422 17.0254Z"
+            fill="white"
+          />
+        </svg>
+        <span class="tooltiptext">Toggle Mic</span>
+      </button>
+      <button
+        id="cam-btn"
+        class="relative tooltip mx-2 flex items-center border border-trigreen justify-center bg-black hover:bg-trigreen h-10 w-10 rounded-md"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
+            stroke="#FFFDFD"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z"
+            stroke="#FFFDFD"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="tooltiptext">Toggle Camera</span>
+      </button>
+      <button
+        id="chat-btn"
+        class="relative tooltip mx-2 flex items-center border border-trigreen justify-center bg-black hover:bg-trigreen h-10 w-10 rounded-md"
+      >
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 19 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M3.87975 14.4618C2.99731 14.4618 1.94964 13.3825 1.94964 12.5317V5.46164H1.52073C0.803526 5.46164 0.212891 6.04876 0.212891 6.76947V18.6173L2.73364 16.0966H12.0291C12.7498 16.0966 13.3369 15.4743 13.3369 14.7536V14.4583C13.3369 14.4618 3.87975 14.4618 3.87975 14.4618Z"
+            fill="white"
+          />
+          <path
+            d="M16.708 0.617065H4.63167C3.81251 0.617065 3.12695 1.30262 3.12695 2.12178V11.9059C3.12695 12.7251 3.81251 13.4106 4.63167 13.4106H14.9397L18.2128 15.7029V2.12178C18.2128 1.30262 17.5272 0.617065 16.708 0.617065Z"
+            fill="white"
+          />
+        </svg>
+        <span class="tooltiptext">Toggle Comment</span>
+      </button>
+      <button
+        id="share-btn"
+        onclick="window.copy('#watchlink')"
+        class="relative tooltip mx-2 flex items-center border border-trigreen justify-center bg-black hover:bg-trigreen h-10 w-10 rounded-md"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#FFF"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-share"
+        >
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+          <polyline points="16 6 12 2 8 6"></polyline>
+          <line x1="12" y1="2" x2="12" y2="15"></line>
+        </svg>
+        <span class="tooltiptext">Share</span>
+      </button>
+    </footer>
+    <!-- component -->
+    <div
+      id="setting"
+      class="bg-gray-800 bg-opacity-50 z-50 flex justify-center items-center absolute top-0 right-0 bottom-0 left-0 hidden"
+    >
+      <div class="bg-tribg w-80 px-4 py-8 rounded-md text-gray-100">
+        <div class="flex flex-col my-2">
+          <label for="">Watch Link</label>
+          <div class="flex relative">
+            <input
+              type="text"
+              id="watchlink"
+              placeholder="https://live.trivoh.com:8443/watch.html?uid=********"
+              disabled
+              class="bg-tribg w-full border-b p-2 border-gray-500 outline-none"
+            />
+            <button class="absolute top-3 right-0" onclick="copy('#watchlink')">
+              <svg
+                width="22"
+                height="25"
+                viewBox="0 0 22 25"
+                fill="none"
+                class="w-4"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.625 21.875V23.8281C15.625 24.4753 15.1003 25 14.4531 25H1.17188C0.524658 25 0 24.4753 0 23.8281V5.85938C0 5.21216 0.524658 4.6875 1.17188 4.6875H4.6875V19.1406C4.6875 20.6484 5.91411 21.875 7.42188 21.875H15.625ZM15.625 5.07812V0H7.42188C6.77466 0 6.25 0.524658 6.25 1.17188V19.1406C6.25 19.7878 6.77466 20.3125 7.42188 20.3125H20.7031C21.3503 20.3125 21.875 19.7878 21.875 19.1406V6.25H16.7969C16.1523 6.25 15.625 5.72266 15.625 5.07812ZM21.5318 3.56304L18.312 0.343213C18.0922 0.123458 17.7941 1.62498e-06 17.4833 0L17.1875 0V4.6875H21.875V4.39165C21.875 4.08086 21.7515 3.7828 21.5318 3.56304Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col my-2">
+          <label for="">Audio Devices</label>
+          <div class="flex">
+            <select class="input-select" id="audio">
+              <option value="" class="p-2">Mic 1</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col my-2">
+          <label for="">Video Devices</label>
+          <div class="flex">
+            <select class="input-select" id="video">
+              <option value="" class="p-2">Cam 1</option>
+            </select>
+          </div>
+        </div>
+        <button class="bg-triorange w-full p-2" id="settingbtn">Save Settings</button>
+      </div>
+    </div>
+    <script src="./js/ui-control.js"></script>
+    <script src="./js/control.js"></script>
+    <script></script>
+    <!-- <script src="./indexwatch.js"></script> -->
+  </body>
+</html>
