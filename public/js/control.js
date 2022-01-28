@@ -13,7 +13,7 @@ const strLink = `${location.origin}/watch.html?uid=${strname}`;
 let countTimeout;
 let publiser;
 
-let autoRecord = false;
+let autoRecord = true;
 
 watchLink.value = strLink;
 // watchLink1.value = strLink;
