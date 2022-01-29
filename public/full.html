@@ -30,7 +30,7 @@
           flvPlayer = flvjs.createPlayer({
             type: "flv",
             isLive: true,
-            url: `${location.origin}/live/${strname}.flv`,
+            url: `wss:/live.trivoh.com:8443/live/${strname}.flv`,
           });
           flvPlayer.attachMediaElement(videoElement);
           flvPlayer.load();
@@ -43,7 +43,7 @@
 
       function play() {
         let urlinfo = new URLSearchParams(location.search);
-        let strname = urlinfo.get("stream");
+        let strname = urlinfo.get("uid");
         if (strname !== "") {
           streamLt(strname);
           return;

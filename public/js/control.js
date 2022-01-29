@@ -7,13 +7,13 @@ let watchLink = $("#watchlink");
 let streamKey = $("#streamkey");
 const strname = uuid.v4();
 // const strname = "fb15dae1-f00b-4dbe-8be3-db84a307fca2";
-const url = `https://live.trivoh.com:8443`;
-const rtmpLink = `rtmp://live.trivoh.com/live`;
+const serverURL = `https://live.trivoh.com:8443`;
+// const serverURL = `https://localhost:8443`;
+const url = new URL(serverURL);
+const rtmpLink = `rtmp://${url.hostname}/live`;
 const strLink = `${location.origin}/watch.html?uid=${strname}`;
 let countTimeout;
 let publiser;
-
-let autoRecord = true;
 
 watchLink.value = strLink;
 // watchLink1.value = strLink;
@@ -67,9 +67,6 @@ function init() {
   publiser.on("start", () => {
     $(".status").classList.remove("hidden");
     $("#start-btn").classList.add("deactive");
-    if (autoRecord === true) {
-      startRec();
-    }
   });
   publiser.on("stop", () => {
     $(".status").classList.add("hidden");
@@ -85,7 +82,7 @@ function init() {
 }
 function start() {
   if (strname !== "") {
-    let rtcLink = `wss://live.trivoh.com:8443/live/${strname}.rtc`;
+    let rtcLink = `wss://${url.host}/live/${strname}.rtc`;
     publiser.start(rtcLink);
     countTimeout = setInterval(() => {
       getViews(strname, "#live-count");
@@ -119,35 +116,9 @@ function toggleVideo() {
   });
 }
 
-function startRec() {
-  // http://xx.com/api/record/{app}/{name}
-  // POST
-  let count = randomString(5);
-  let recUrl = `${url}/api/record/live/${strname}`;
-  let recSaver = `https://ecare.trvendors.com/api/save-recording/post`;
-  postData(recUrl, "POST", {
-    filepath: "./record/live",
-    filename: `${strname}-${count}.mp4`,
-  }).then((data) => {
-    // console.log(data);
-    if (data.code == 200) {
-      //Get recording from here and save it to api
-      let videoUrl = `${url}/record/live/${strname}-${count}.mp4`;
-      postData(recSaver, "POST", {
-        slug: strname,
-        recording_link: videoUrl,
-      }).then((data) => {
-        console.log(data);
-      });
-      return;
-    }
-    alert(data.error);
-  });
-}
-
 function getViews(name, id) {
   let countEl = $(id);
-  let streamAPI = `${url}/api/streams/live/${name}`;
+  let streamAPI = `${url.origin}/api/streams/live/${name}`;
   fetch(streamAPI)
     .then((res) => res.json())
     .then((dt) => (countEl.innerHTML = dt?.data?.live[name]?.subcount || 0))
