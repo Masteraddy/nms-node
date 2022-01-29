@@ -195,6 +195,9 @@
         player.on("start", () => {
           document.querySelector("#play-btn").classList.remove("play");
           document.querySelector("#play-btn").classList.add("pause");
+          setInterval(() => {
+            location.reload();
+          }, 30500);
           console.log("player on start");
         });
 
