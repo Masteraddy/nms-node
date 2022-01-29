@@ -209,6 +209,8 @@
         });
 
         player.on("videoInfo", (w, h, codec) => {
+          document.querySelector("#video1").clientWidth = w;
+          document.querySelector("#video1").clientHeight = h;
           console.log("player on video info width=" + w + " height=" + h + " codec=" + codec);
         });
 
