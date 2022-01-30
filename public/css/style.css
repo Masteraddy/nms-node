@@ -54,6 +54,11 @@ body.dark {
   --label-color: #999;
 }
 
+.video-js[tabindex="-1"] {
+  width: 100%;
+  height: 100%;
+}
+
 .comment-title {
   color: var(--message-text);
 }
