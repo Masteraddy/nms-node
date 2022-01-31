@@ -154,7 +154,7 @@
       function start() {
         let strname = document.getElementById("stream-name").value;
         // http://192.168.43.178:8000/
-        const url = `https://live.trivoh.com:8443`;
+        const url = `wss://live.trivoh.com:8443`;
         let protocol = location.protocol == "http:" ? "ws" : "wss";
         if (strname !== "") {
           publiser.start(`${url}/live/${strname}.rtc`);
