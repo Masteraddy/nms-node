@@ -69,10 +69,11 @@ body.dark {
   position: absolute;
   top: 0;
   left: 0;
+  padding: 5px;
 }
 .video-container {
   width: 100%;
-  padding-top: 56.25%;
+  /* padding-top: 56.25%; */
   height: 100%;
   position: relative;
 }
