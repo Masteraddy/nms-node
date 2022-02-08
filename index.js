@@ -10,8 +10,8 @@ const PORTS = process.env.PORTS || 3030;
 
 app.use(express.json());
 
-const privateKey = fs.readFileSync(`${__dirname}/keys/key.pem`, "utf8");
-const certificate = fs.readFileSync(`${__dirname}/keys/chain.crt`, "utf8");
+const privateKey = fs.readFileSync(`${__dirname}/keys/keystream.pem`, "utf8");
+const certificate = fs.readFileSync(`${__dirname}/keys/chainstream.pem`, "utf8");
 
 const credentials = { key: privateKey, cert: certificate };
 
@@ -19,7 +19,7 @@ const staticServe = express.static(`${__dirname}/public`);
 
 app.post("/notify", async (req, res) => {
   const { action, filename, name } = req.body;
-  let url = `https://live.trivoh.com:8443/record/live/${name}/${filename}`;
+  let url = `https://stream.trivoh.com:8443/record/live/${name}/${filename}`;
   if (action == "doneRecord") {
     try {
       let recSaver = `https://ecare.trvendors.com/api/save-recording/post`;
@@ -33,6 +33,7 @@ app.post("/notify", async (req, res) => {
   }
   res.json({ ok: true, url });
 });
+
 app.use("/", staticServe);
 app.use("*", staticServe);
 
