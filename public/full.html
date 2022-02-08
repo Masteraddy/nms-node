@@ -17,6 +17,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script src="./js/constant.js"></script>
   </head>
   <body class="dark">
     <video id="video1" controls autoplay muted style="height: 100%; width: 100%"></video>
@@ -30,7 +31,7 @@
           flvPlayer = flvjs.createPlayer({
             type: "flv",
             isLive: true,
-            url: `wss:/live.trivoh.com:8443/live/${strname}.flv`,
+            url: `wss://${url.host}/live/${strname}.flv`,
           });
           flvPlayer.attachMediaElement(videoElement);
           flvPlayer.load();

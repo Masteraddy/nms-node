@@ -14,6 +14,7 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <script src="./js/constant.js"></script>
     <script src="./js/nmrtc.js"></script>
 
     <title>NM Test App</title>
@@ -153,11 +154,8 @@
       });
       function start() {
         let strname = document.getElementById("stream-name").value;
-        // http://192.168.43.178:8000/
-        const url = `wss://live.trivoh.com:8443`;
-        let protocol = location.protocol == "http:" ? "ws" : "wss";
         if (strname !== "") {
-          publiser.start(`${url}/live/${strname}.rtc`);
+          publiser.start(`wss//${url.host}/live/${strname}.rtc`);
           return;
         }
         statusEl.innerHTML = "Stream Name Can't be Empty!";

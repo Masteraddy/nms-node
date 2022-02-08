@@ -6,17 +6,12 @@ let streamRTMP = $("#streamurl");
 let watchLink = $("#watchlink");
 let streamKey = $("#streamkey");
 const strname = uuid.v4();
-// const strname = "fb15dae1-f00b-4dbe-8be3-db84a307fca2";
-const serverURL = `https://live.trivoh.com:8443`;
-// const serverURL = `https://localhost:8443`;
-const url = new URL(serverURL);
 const rtmpLink = `rtmp://${url.hostname}/live`;
 const strLink = `${location.origin}/watch.html?uid=${strname}`;
 let countTimeout;
 let publiser;
 
 watchLink.value = strLink;
-// watchLink1.value = strLink;
 
 if (location.pathname == "/stream.html") {
   streamRTMP.value = rtmpLink;

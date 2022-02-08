@@ -16,6 +16,7 @@
     <link href="https://unpkg.com/@videojs/themes@1/dist/fantasy/index.css" rel="stylesheet" />
     <link href="https://unpkg.com/@videojs/themes@1/dist/sea/index.css" rel="stylesheet" />
     <link href="https://unpkg.com/@videojs/themes@1/dist/forest/index.css" rel="stylesheet" />
+    <script src="./js/constant.js"></script>
   </head>
   <body class="dark">
     <div class="app-container">
@@ -180,7 +181,7 @@
       }, 5000);
       var videoPlayerElement = document.createElement("video");
       var source = document.createElement("source");
-      source.setAttribute("src", `wss://live.trivoh.com:8443/live/${strname}.flv`);
+      source.setAttribute("src", `wss://${url.host}/live/${strname}.flv`);
       source.setAttribute("type", "video/x-flv");
       videoPlayerElement.setAttribute("muted", "true");
       videoPlayerElement.id = "video1";
@@ -206,7 +207,7 @@
 
       function getViews(name, id) {
         let countEl = document.querySelector(id);
-        let streamAPI = `https://live.trivoh.com:8443/api/streams/live/${name}`;
+        let streamAPI = `https://${url.host}/api/streams/live/${name}`;
         fetch(streamAPI)
           .then((res) => res.json())
           .then((dt) => (countEl.innerHTML = dt?.data?.live[name]?.subcount || 0))
