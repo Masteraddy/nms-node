@@ -2,6 +2,7 @@ let startBtn = $("#start-btn");
 let camBtn = $("#cam-btn");
 let micBtn = $("#mic-btn");
 let settingBtn = $("#settingbtn");
+let shareScreen = $("#share-screen");
 let streamRTMP = $("#streamurl");
 let watchLink = $("#watchlink");
 let streamKey = $("#streamkey");
@@ -20,6 +21,7 @@ if (location.pathname == "/stream.html") {
 if (location.pathname == "/" || location.pathname == "/index.html") {
   camBtn.addEventListener("click", toggleVideo);
   micBtn.addEventListener("click", toggleAudio);
+
   startBtn.addEventListener("click", function (e) {
     let isStopBtn = $("#start-btn").className.includes("deactive");
     if (isStopBtn) {
@@ -73,7 +75,20 @@ function init() {
     clearInterval(countTimeout);
     console.log("NMRTC Publisher on error", error);
   });
+  publiser.on("sharescreen", () => {
+    $("#share-screen").classList.add("deactive");
+    $("#share-screen").setAttribute("disabled", true);
+    console.log("Sharing Screen");
+  });
+  publiser.on("stopsharescreen", () => {
+    $("#share-screen").classList.remove("deactive");
+    $("#share-screen").removeAttribute("disabled");
+    console.log("Stop Sharing Screen");
+  });
   $("#setting").classList.add("hidden");
+  shareScreen.addEventListener("click", (e) => {
+    publiser.shareScreen();
+  });
 }
 function start() {
   if (strname !== "") {

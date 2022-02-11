@@ -41,15 +41,50 @@ var nmRTC = (function () {
           (this.videoElement = document.getElementById(this.id)),
           (this.pc = null),
           (this.ws = null),
-          navigator.mediaDevices
-            .getUserMedia(a)
-            .then(this.gotStream.bind(this))
-            .catch(this.handleError.bind(this)),
+          (this.all = a),
+          this.useCamera(),
           (this.toggleAudio = this.toggleAudio.bind(this)),
-          (this.toggleVideo = this.toggleVideo.bind(this));
+          (this.toggleVideo = this.toggleVideo.bind(this)),
+          (this.shareScreen = this.shareScreen.bind(this));
       }
-      gotStream(a) {
-        (this.videoElement.srcObject = a), (this.stream = a);
+      gotStream(a, isScreen) {
+        if (this.pc !== null) {
+          let sender = this.pc.getSenders().find((s) => s.track.kind == "video");
+          sender.replaceTrack(a.getVideoTracks()[0]);
+        }
+        if (isScreen) {
+          this.emit("sharescreen");
+        }
+        a.onactive = (d) => {
+          // console.log(d);
+        };
+        a.oninactive = (d) => {
+          // console.log(d);
+          this.useCamera();
+          this.emit("stopsharescreen");
+        };
+        a.onaddtrack = (d) => {
+          // console.log(d);
+        };
+        a.onremovetrack = (d) => {
+          // console.log(d);
+        };
+        this.videoElement.srcObject = a;
+        this.stream = a;
+      }
+      useCamera() {
+        navigator.mediaDevices
+          .getUserMedia(this.all)
+          .then(this.gotStream.bind(this))
+          .catch(this.handleError.bind(this));
+      }
+      shareScreen(a) {
+        navigator.mediaDevices
+          .getDisplayMedia(a)
+          .then((stream) => {
+            this.gotStream(stream, true);
+          })
+          .catch(this.handleError.bind(this));
       }
       handleError(a) {
         this.emit("error", a);
