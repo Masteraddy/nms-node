@@ -10,6 +10,8 @@ const PORTS = process.env.PORTS || 3030;
 
 app.use(express.json());
 
+const recUrls = [];
+
 const privateKey = fs.readFileSync(`${__dirname}/keys/keystream.pem`, "utf8");
 const certificate = fs.readFileSync(`${__dirname}/keys/chainstream.pem`, "utf8");
 
@@ -21,10 +23,13 @@ app.post("/notify", async (req, res) => {
   const { action, filename, name } = req.body;
   let url = `https://stream.trivoh.com:8443/record/live/${name}/${filename}`;
   if (action == "doneRecord") {
+    recUrls.push(url);
     try {
-      let recSaver = `https://ecare.trvendors.com/api/save-recording/post`;
+      let recSaver = `https://my.trivoh.com/api/save-recording/${name}?url=${url}`;
+      // let recSaver = `https://ecare.trvendors.com/api/save-recording/post`;
       const body = { slug: name, recording_link: url };
-      const response = await axios.post(recSaver, body);
+      // const response = await axios.post(recSaver, body);
+      const response = await axios.get(recSaver);
       const data = await response.data;
       console.log(url, data);
     } catch (error) {
@@ -32,6 +37,10 @@ app.post("/notify", async (req, res) => {
     }
   }
   res.json({ ok: true, url });
+});
+
+app.get("/recs", (req, res) => {
+  res.status(200).json(recUrls);
 });
 
 app.use("/", staticServe);
