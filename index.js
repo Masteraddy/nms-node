@@ -12,8 +12,8 @@ app.use(express.json());
 
 const recUrls = [];
 
-const privateKey = fs.readFileSync(`${__dirname}/keys/keystream.pem`, "utf8");
-const certificate = fs.readFileSync(`${__dirname}/keys/chainstream.pem`, "utf8");
+const privateKey = fs.readFileSync(`${__dirname}/keys/key.pem`, "utf8");
+const certificate = fs.readFileSync(`${__dirname}/keys/chain.crt`, "utf8");
 
 const credentials = { key: privateKey, cert: certificate };
 
@@ -21,20 +21,20 @@ const staticServe = express.static(`${__dirname}/public`);
 
 app.post("/notify", async (req, res) => {
   const { action, filename, name } = req.body;
-  let url = `https://stream.trivoh.com:8443/record/live/${name}/${filename}`;
+  let url = `https://live.trivoh.com:8443/record/live/${name}/${filename}`;
   if (action == "doneRecord") {
-    recUrls.push(url);
     try {
-      let recSaver = `https://my.trivoh.com/api/save-recording/${name}?url=${url}`;
-      // let recSaver = `https://ecare.trvendors.com/api/save-recording/post`;
+      let recSaver = `https://kiind.co.uk/api/save-recording/post`;
       const body = { slug: name, recording_link: url };
-      // const response = await axios.post(recSaver, body);
-      const response = await axios.get(recSaver);
+      const response = await axios.post(recSaver, body);
       const data = await response.data;
       console.log(url, data);
     } catch (error) {
       console.log(url, error?.response?.data?.message, error?.response?.status);
     }
+  } else {
+    console.log("Still recording");
+    console.log(filename);
   }
   res.json({ ok: true, url });
 });
