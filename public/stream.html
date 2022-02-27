@@ -88,6 +88,16 @@
       .tooltip:hover .tooltiptext {
         visibility: visible;
       }
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .overflow-y-scroll::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .overflow-y-scroll {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
     </style>
   </head>
   <body class="dark overflow-hidden bg-tribg">
@@ -246,7 +256,7 @@
 
       <section
         id="chat"
-        class="h-screen z-50 w-full hidden top-0 right-0 py-8 md:w-72 xl:w-1/5 bg-tribg absolute md:relative"
+        class="h-screen z-50 w-full hidden top-0 right-0 py-8 md:w-80 xl:w-96 bg-tribg absolute md:relative"
       >
         <button id="chat-close" class="h-8 w-8 absolute top-0 right-0 text-green-100 bg-gray-600">
           X
@@ -255,7 +265,9 @@
           <div class="flex text-gray-200 justify-around">
             <a href="#">Comments</a>
           </div>
-          <div class="h-full"></div>
+          <div class="h-full flex">
+            <div id="comments" class="w-full overflow-y-scroll"></div>
+          </div>
           <div class="relative mb-8 md:mb-0">
             <input
               type="text"
@@ -380,8 +392,11 @@
         <button class="bg-triorange w-full p-2" id="settingbtn">Save Settings</button>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.common.min.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="./js/ui-control.js"></script>
     <script src="./js/control.js"></script>
     <script src="./js/indexwatch.js"></script>
+    <script src="./js/comment.js"></script>
   </body>
 </html>
